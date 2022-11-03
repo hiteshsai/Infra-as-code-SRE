@@ -1,0 +1,19 @@
+on: 
+  issue_comment:
+    types: [created]
+name: Automatic Rebase
+jobs:
+  rebase:
+    name: Rebase
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1.2.0
+    - name: Automatic Rebase
+      if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/rebase')
+      # uses: cirrus-actions/rebase@fkorotkov-ignore-whitespaces
+      uses: cirrus-actions/rebase@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Always run
+      if: always()
+      run: echo "This job is used to prevent the workflow to fail when all other jobs are skipped."
